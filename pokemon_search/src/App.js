@@ -1,6 +1,4 @@
-import logo from "./logo.svg";
 import "./App.css";
-import "./styles.css";
 
 import { useState, useEffect } from "react";
 
@@ -10,7 +8,7 @@ export default function App() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(`https://jsonplaceholder.typicode.com/posts?_limit=8`)
+    fetch(`https://pokeapi.co/api/v2/pokemon?limit=50`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(
@@ -20,6 +18,7 @@ export default function App() {
         return response.json();
       })
       .then((actualData) => {
+        console.log(actualData);
         setData(actualData);
         setError(null);
       })
@@ -34,19 +33,20 @@ export default function App() {
 
   return (
     <div className="App">
-      <h1>API Posts</h1>
+      <h1>50 Pokemon</h1>
       {loading && <div>A moment please...</div>}
       {error && (
         <div>{`There is a problem fetching the post data - ${error}`}</div>
       )}
       <ul>
         {data &&
-          data.map(({ id, title }) => (
-            <li key={id}>
-              <h3>{title}</h3>
+          data.results.map(({ name }) => (
+            <li>
+              <h3>{name}</h3>
             </li>
           ))}
       </ul>
+      ;
     </div>
   );
 }
