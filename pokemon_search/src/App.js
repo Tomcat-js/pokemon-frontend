@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 
 export default function App() {
   const [data, setData] = useState(null);
+  const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -17,9 +18,11 @@ export default function App() {
         }
         return response.json();
       })
-      .then((actualData) => {
-        console.log(actualData);
-        setData(actualData);
+      .then((allpokemon) => {
+        allpokemon.results.forEach(function (pokemon) {
+          fetchPokemonData(pokemon);
+        });
+        setData(allpokemon);
         setError(null);
       })
       .catch((err) => {
@@ -29,6 +32,14 @@ export default function App() {
       .finally(() => {
         setLoading(false);
       });
+    function fetchPokemonData(pokemon) {
+      let url = pokemon.url;
+      fetch(url)
+        .then((response) => response.json())
+        .then(function (pokeData) {
+          setList((picList) => [...picList, pokeData.sprites.front_default]);
+        });
+    }
   }, []);
 
   return (
@@ -39,14 +50,13 @@ export default function App() {
         <div>{`There is a problem fetching the post data - ${error}`}</div>
       )}
       <ul>
-        {data &&
-          data.results.map(({ name }) => (
+        {list &&
+          list.map((name) => (
             <li>
-              <h3>{name}</h3>
+              <img src={name}></img>
             </li>
           ))}
       </ul>
-      ;
     </div>
   );
 }
