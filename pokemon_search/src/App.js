@@ -50,12 +50,12 @@ export default function App() {
         <div>{`There is a problem fetching the post data - ${error}`}</div>
       )}
       <ul>
-        {list &&
-          list.map((name) => (
-            <li>
-              <img src={name}></img>
-            </li>
-          ))}
+        {list.map((pic, i) => (
+          <li key={i}>
+            <h1>{data.results[i].name}</h1>
+            <img src={pic}></img>
+          </li>
+        ))}
       </ul>
     </div>
   );
