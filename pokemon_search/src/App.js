@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 export default function App() {
   const [data, setData] = useState(null);
-  const [list, setList] = useState([]);
+  const [pokemonData, setPokemonData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -37,7 +37,7 @@ export default function App() {
       fetch(url)
         .then((response) => response.json())
         .then(function (pokeData) {
-          setList((picList) => [...picList, pokeData.sprites.front_default]);
+          setPokemonData((pokeObjList) => [...pokeObjList, pokeData]);
         });
     }
   }, []);
@@ -50,10 +50,15 @@ export default function App() {
         <div>{`There is a problem fetching the post data - ${error}`}</div>
       )}
       <ul>
-        {list.map((pic, i) => (
+        {pokemonData.map((pokeObj, i) => (
           <li key={i}>
             <h1>{data.results[i].name}</h1>
-            <img src={pic}></img>
+            <h3>Weight: {Math.round(pokeObj.weight / 10)} kg</h3>
+            <h3>Abilities: {pokeObj.abilities.length} </h3>
+            {pokeObj.abilities.map((abilityList, i) => {
+              return <h6>{abilityList.ability.name}</h6>;
+            })}
+            <img src={pokeObj.sprites.front_default}></img>
           </li>
         ))}
       </ul>
