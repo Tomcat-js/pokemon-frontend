@@ -1,8 +1,10 @@
 import "./App.css";
+
 import { useState, useEffect } from "react";
 
 export default function App() {
   const [data, setData] = useState(null);
+  const [pokemonData, setPokemonData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -16,16 +18,11 @@ export default function App() {
         }
         return response.json();
       })
-      .then((firstResData) => {
-        let urls = firstResData.results.map((poke) => poke.url);
-
-        const fetchAll = async (urls) => {
-          const res = await Promise.all(urls.map((u) => fetch(u)));
-          const jsons = await Promise.all(res.map((r) => r.json()));
-          // console.log(jsons);
-          setData(jsons);
-        };
-        fetchAll(urls);
+      .then((allpokemon) => {
+        allpokemon.results.forEach(function (pokemon) {
+          fetchPokemonData(pokemon);
+        });
+        setData(allpokemon);
         setError(null);
       })
       .catch((err) => {
@@ -35,8 +32,15 @@ export default function App() {
       .finally(() => {
         setLoading(false);
       });
+    function fetchPokemonData(pokemon) {
+      let url = pokemon.url;
+      fetch(url)
+        .then((response) => response.json())
+        .then(function (pokeData) {
+          setPokemonData((pokeObjList) => [...pokeObjList, pokeData]);
+        });
+    }
   }, []);
-
   console.log("rendered");
   return (
     <div className="App">
@@ -46,15 +50,18 @@ export default function App() {
         <div>{`There is a problem fetching the post data - ${error}`}</div>
       )}
       <ul>
-        {data &&
-          data.map(({ id, species, sprites }) => (
-            <li key={id}>
-              <h2>{species.name}</h2>
-              <img src={sprites.front_default}></img>
-            </li>
-          ))}
+        {pokemonData.map((pokeObj, i) => (
+          <li key={i}>
+            <h1>{data.results[i].name}</h1>
+            <h3>Weight: {Math.round(pokeObj.weight / 10)} kg</h3>
+            <h3>Abilities: {pokeObj.abilities.length} </h3>
+            {pokeObj.abilities.map((abilityList, idx) => {
+              return <h6 key={idx}>{abilityList.ability.name}</h6>;
+            })}
+            <img src={pokeObj.sprites.front_default}></img>
+          </li>
+        ))}
       </ul>
-      <button className="btn fourth">Next 50?</button>
     </div>
   );
 }
