@@ -5,9 +5,10 @@ export default function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [offset, setOffset] = useState(0);
 
   useEffect(() => {
-    fetch(`https://pokeapi.co/api/v2/pokemon?limit=50`)
+    fetch(`https://pokeapi.co/api/v2/pokemon?limit=50&offset=${offset}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(
@@ -18,13 +19,6 @@ export default function App() {
       })
       .then((firstResData) => {
         let urls = firstResData.results.map((poke) => poke.url);
-
-        const fetchAll = async (urls) => {
-          const res = await Promise.all(urls.map((u) => fetch(u)));
-          const jsons = await Promise.all(res.map((r) => r.json()));
-          // console.log(jsons);
-          setData(jsons);
-        };
         fetchAll(urls);
         setError(null);
       })
@@ -35,7 +29,13 @@ export default function App() {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [offset]);
+
+  const fetchAll = async (urls) => {
+    const res = await Promise.all(urls.map((u) => fetch(u)));
+    const jsons = await Promise.all(res.map((r) => r.json()));
+    setData(jsons);
+  };
 
   console.log("rendered");
   return (
@@ -54,7 +54,9 @@ export default function App() {
             </li>
           ))}
       </ul>
-      <button className="btn fourth">Next 50?</button>
+      <button onClick={() => setOffset(offset + 50)} className="btn fourth">
+        Next 50?
+      </button>
     </div>
   );
 }
