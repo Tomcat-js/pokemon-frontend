@@ -1,45 +1,52 @@
 import "./App.css";
 import { useState, useEffect } from "react";
 
-export default function App() {
-  const useFetch = () => {
-    async function fetchFunction(url) {
-      try {
-        const response = await fetch(url);
-        const fiftyPokes = await response.json();
-        let urls = await fiftyPokes.results.map((poke) => poke.url);
-
-        fetchAll(urls);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setData(null);
-      }
+const useFetch = ({ onCompleted }) => {
+  async function fetchFunction(url) {
+    try {
+      setData(null);
+      setLoading(true);
+      const response = await fetch(url);
+      await onCompleted(response, setData);
+      setLoading(false);
+    } catch (err) {
+      setError(err.message);
+      setData(null);
     }
+  }
 
-    const fetchAll = async (urls) => {
-      try {
-        const jsonsPromises = urls.map(async (u) => {
-          const res = await fetch(u);
-          const json = await res.json();
-          return json;
-        });
-        const jsons = await Promise.all(jsonsPromises);
-        setData(jsons);
-      } catch (err) {
-        console.log(err.message);
-      }
-    };
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-    const [data, setData] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  return [fetchFunction, { data, error, loading }];
+};
 
-    return [fetchFunction, { data, error, loading }];
-  };
+export default function App() {
   const [offset, setOffset] = useState(0);
 
-  const [fetchFunction, { data, error, loading }] = useFetch();
+  const [fetchFunction, { data, error, loading }] = useFetch({
+    onCompleted: async (response, handleData) => {
+      const fetchAll = async (urls) => {
+        try {
+          const jsonsPromises = urls.map(async (u) => {
+            const res = await fetch(u);
+            const json = await res.json();
+            return json;
+          });
+          const jsons = await Promise.all(jsonsPromises);
+          handleData(jsons);
+        } catch (err) {
+          console.log(err.message);
+        }
+      };
+
+      const fiftyPokes = await response.json();
+      let urls = await fiftyPokes.results.map((poke) => poke.url);
+
+      fetchAll(urls);
+    },
+  });
 
   useEffect(() => {
     fetchFunction(
@@ -48,8 +55,9 @@ export default function App() {
   }, [offset]);
 
   console.log("rendered");
+  console.log(loading);
 
-  if (loading) return "Loading...";
+  // if (loading) return "Loading...";
 
   return (
     <div className="App">
