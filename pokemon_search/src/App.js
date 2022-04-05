@@ -1,5 +1,6 @@
 import "./App.css";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const useFetch = ({ onCompleted }) => {
   async function fetchFunction(url) {
@@ -54,11 +55,6 @@ export default function App() {
     );
   }, [offset]);
 
-  console.log("rendered");
-  console.log(loading);
-
-  // if (loading) return "Loading...";
-
   return (
     <div className="App">
       <h1>50 Pokemon</h1>
@@ -66,12 +62,20 @@ export default function App() {
       {error && (
         <div>{`There is a problem fetching the post data - ${error}`}</div>
       )}
-      <ul>
+
+      <ul className="unord-list">
         {data &&
           data.map(({ id, species, sprites }) => (
-            <li key={id}>
-              <h2>{species.name}</h2>
-              <img src={sprites.front_default}></img>
+            <li key={id} className="list ">
+              <Link to={`/details/${id}`}>
+                <div>
+                  <h2>{species.name}</h2>
+                  <img
+                    src={sprites.front_default}
+                    alt={`${species.name}`}
+                  ></img>
+                </div>
+              </Link>
             </li>
           ))}
       </ul>

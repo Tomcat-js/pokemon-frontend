@@ -1,0 +1,142 @@
+.details-page {
+  margin: auto;
+  width: 50%;
+}
+
+.wrapper {
+  height: 170px;
+  display: flex;
+  flex-flow: row wrap;
+  font-weight: bold;
+  text-align: center;
+}
+
+.wrapper > * {
+  padding: 10px;
+  flex: 1 100%;
+}
+
+.header {
+  border: 1px solid #747272;
+  border-radius: 5px;
+}
+
+.footer {
+  border: 1px solid #747272;
+  border-radius: 5px;
+  background: none;
+}
+
+.main {
+  border: 1px solid #747272;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.big-image {
+  width: 180px;
+}
+
+.aside-1 {
+  border: 1px solid #747272;
+  border-radius: 5px;
+}
+
+.aside-2 {
+  border: 1px solid #747272;
+  border-radius: 5px;
+}
+
+.abilities {
+  font-weight: bolder;
+  font-style: italic;
+  text-decoration: underline;
+}
+
+.details-btn {
+  display: inline-block;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  border: 2px solid #e74c3c;
+  border-radius: 0.6em;
+  color: #e74c3c;
+  cursor: pointer;
+  -webkit-align-self: center;
+  -ms-flex-item-align: center;
+  align-self: center;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1;
+  margin: 20px;
+  padding: 1.2em 2.8em;
+  text-decoration: none;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+}
+.details-btn:hover,
+.details-btn:focus {
+  color: black;
+  outline: 0;
+}
+
+.details-fourth {
+  border-color: #f1c40f;
+  color: black;
+  background-image: -webkit-linear-gradient(
+    45deg,
+    #f1c40f 50%,
+    transparent 50%
+  );
+  background-image: linear-gradient(45deg, #f1c40f 50%, transparent 50%);
+  background-position: 100%;
+  background-size: 400%;
+  -webkit-transition: background 300ms ease-in-out;
+  transition: background 300ms ease-in-out;
+}
+.details-fourth:hover {
+  background-position: 0;
+}
+
+@media all and (max-width: 800px) {
+  .details-page {
+    margin: auto;
+    width: 100%;
+  }
+}
+
+@media all and (min-width: 600px) {
+  .aside {
+    flex: 1 0 0;
+  }
+}
+
+@media all and (min-width: 800px) {
+  .main {
+    flex: 3 0px;
+  }
+  .aside-1 {
+    order: 1;
+  }
+  .main {
+    order: 2;
+  }
+  .aside-2 {
+    order: 3;
+  }
+  .footer {
+    order: 4;
+  }
+}
+
+body {
+  padding: 2em;
+}
+
+li {
+  list-style-type: none;
+}
